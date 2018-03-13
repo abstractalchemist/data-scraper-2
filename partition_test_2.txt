@@ -1,0 +1,13 @@
+
+Shana, Development of the Town
+この街での成長 シャナ
+Card No.: SS/W14-001  Rarity: RR
+Color: Yellow   Side: Weiss  Character
+Level: 0   Cost: 0   Power: 500   Soul: 1
+Trait 1: 炎 (Flame)      Trait 2: メロンパン (Melon Bread)
+Triggers: None
+Flavor: You can reach it if you reach out...
+TEXT: [C] ASSIST All your Characters in front of this gain +500 Power.
+[S] [Rest this] Choose 1 of your ::Flame:: Characters, and that Character gains
++500 Power for the turn.
+

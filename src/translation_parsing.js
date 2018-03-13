@@ -1,31 +1,57 @@
 // parse a booster translation file from Heart of the cards
 
-const { create, from } = require('rxjs').Observable;
+const { ReplaySubject, Observable } = require('rxjs')
+const { create, from, of } = Observable;
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
 const { http } = require('./utils');
 const { rebuildAbilities } = require('./dom_parsing');
 //const { series_code } = require('./config');
 
-const config_data = fs.readFileSync(process.argv[2]);
-const config = JSON.parse(config_data)
+//const config_data = fs.readFileSync(process.argv[2]);
+//const config = JSON.parse(config_data)
 
 
-function series_code(id) {
-   //    console.log(`checking ${id}`)
-   let info = config.find( ({prefix,info}) => {
-      if(info.url && info.id) {
-         if(typeof prefix === 'string')
-            return id.startsWith(prefix.replace("/","_").replace("-","_").toLowerCase())
-         return prefix.find( i => id.startsWith(i.replace("/","_").replace("-","_").toLowerCase()))
-      }
+const series_code = (_ => {
+   let subject = new ReplaySubject()
+   create(observer => {
+      if(process.env.NODE_ENV !== 'production')
+         console.log(`parsing file ${process.env.CONFIG_FILE}`)
+      if(process.env.CONFIG_FILE && process.env.CONFIG_FILE.endsWith('json'))
+         fs.readFile(process.env.CONFIG_FILE,
+            (error, contents) => {
+               if(error) observer.error(error)
+               else {
+                  try {
+                     observer.next(JSON.parse(contents))
+                     observer.complete()
+                  }
+                  catch(e) {
+                     observer.error(new Error(`Error parsing ${process.env.CONFIG_FILE}`))
+                  }
+               }
+            })
    })
-   if(info) {
-      return info.info.id;
+      .subscribe(subject)
+
+   //    console.log(`checking ${id}`)
+   return id => {
+      return subject
+         .map(config => {
+           let info = config.find( ({prefix,info}) => {
+               if(info.url && info.id) {
+                  if(typeof prefix === 'string')
+                     return id.startsWith(prefix.replace("/","_").replace("-","_").toLowerCase())
+                  return prefix.find( i => id.startsWith(i.replace("/","_").replace("-","_").toLowerCase()))
+               }
+            })
+            if(info) {
+               return info.info.id;
+            }
+            else throw new Error(`could not locate id for ${id}`)
+         })
    }
-   else
-      console.log("id mapping not found")
-}
+})()
 
 const colorRe = /^Color: ([a-zA-Z]+)/
 const re1 = new RegExp("TEXT:");
@@ -166,28 +192,34 @@ function parseIt(file) {
       .mergeMap(partition => {
          let { trigger, color, power, soul, cost, trait1, trait2, lvl, data, id, couchdbid, abilities, splitid, rarity } = parsePartition(partition);
          
-         return http('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + series_code(couchdbid) + '&code=' + splitid[splitid.length - 1]  +  '&view=Go')
-         //		.do(data => fs.writeFile('/tmp/' + couchdbid + '.html', data, err => { if(err) console.log(err)} ))
-            .map(data => new JSDOM(data))
-            .map(findImageHref)
-            .map(imgsrc => {
-            //		    console.log(imgsrc);
-               return {
-                  name:data[0],
-                  level:lvl,
-                  rarity:rarity,
-                  number:id[1].trim(),
-                  id:couchdbid,
-                  abilities:abilities,
-                  trigger_action:trigger_map(trigger),
-                  color,
-                  power,
-                  soul,
-                  cost,
-                  trait1,
-                  trait2,
-                  image:imgsrc}
+         return series_code(couchdbid)
+            .mergeMap(image_id => {
+               if(process.env.NODE_ENV !== 'TESTING')
+                  return http('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + image_id + '&code=' + splitid[splitid.length - 1]  +  '&view=Go')
+         //	   	.do(data => fs.writeFile('/tmp/' + couchdbid + '.html', data, err => { if(err) console.log(err)} ))
+                     .map(data => new JSDOM(data))
+                     .map(findImageHref)
+               
+               return of("")
             })
+               .map(imgsrc => {
+               //		    console.log(imgsrc);
+                  return {
+                     name:data[0],
+                     level:lvl,
+                     rarity:rarity,
+                     number:id[1].trim(),
+                     id:couchdbid,
+                     abilities:abilities,
+                     trigger_action:trigger_map(trigger),
+                     color,
+                     power,
+                     soul,
+                     cost,
+                     trait1,
+                     trait2,
+                     image:imgsrc}
+               })
       })
 
 

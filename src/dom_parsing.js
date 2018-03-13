@@ -32,23 +32,28 @@ function rebuildAbilities(input) {
    
       
       try {
-      let rei = re.exec(data);
-      if(rei && rei.length > 0) {
-         data = rei[1].trim();
+         let rei = re.exec(data);
+         if(rei && rei.length > 0) {
+            data = rei[1].trim();
+         }
+         if(!data.startsWith("[")) {
+            if(buffer.length > 0)
+               buffer[buffer.length - 1] += " " + data;
+            else
+               buffer.push(data)
+
+         }
+         else
+            buffer.push(data);
       }
-      if(!data.startsWith("[")) {
-         buffer[buffer.length - 1] += " " + data;
-      }
-      else
-         buffer.push(data);
-      }
+
       catch(e) {
          console.log(e);
       }
    
    
    })
-   
+
    return buffer;
 }
 

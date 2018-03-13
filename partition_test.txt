@@ -1,0 +1,12 @@
+Alast Tooru
+アラス・トオル
+Card No.: SS/W14-026  Rarity: U
+Color: Yellow   Side: Weiss  Event
+Level: 2   Cost: 1   Power: 0   Soul: 0
+Trait 1: None      Trait 2: None
+Triggers: None
+Flavor: Ma'am, that's why you put me on the errand...
+TEXT: Search your Library for up to 2 ::Flame:: Characters, reveal them, and
+put them in your hand. Discard a card from your hand to your Waiting Room. Send
+this to Memory.
+
