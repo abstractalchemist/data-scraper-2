@@ -3,7 +3,7 @@
 const { create, from } = require('rxjs').Observable;
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
-const { httpPromise } = require('./utils');
+const { http } = require('./utils');
 const { rebuildAbilities } = require('./dom_parsing');
 //const { series_code } = require('./config');
 
@@ -124,7 +124,7 @@ function generateFileParser(file) {
 }
 
 function generateHttpParser(url) {
-   return from(httpPromise(url));
+   return http(url);
 }
 
 // heart of the cards map
@@ -166,7 +166,7 @@ function parseIt(file) {
       .mergeMap(partition => {
          let { trigger, color, power, soul, cost, trait1, trait2, lvl, data, id, couchdbid, abilities, splitid, rarity } = parsePartition(partition);
          
-         return from(httpPromise('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + series_code(couchdbid) + '&code=' + splitid[splitid.length - 1]  +  '&view=Go'))
+         return http('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + series_code(couchdbid) + '&code=' + splitid[splitid.length - 1]  +  '&view=Go')
          //		.do(data => fs.writeFile('/tmp/' + couchdbid + '.html', data, err => { if(err) console.log(err)} ))
             .map(data => new JSDOM(data))
             .map(findImageHref)

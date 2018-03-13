@@ -1,5 +1,5 @@
 const { JSDOM } = require('jsdom');
-const { httpPromise } = require('./utils');
+const { http } = require('./utils');
 const { from, range, of, create } = require('rxjs').Observable;
 const fs = require('fs')
 const pages = function(data) {
@@ -126,11 +126,11 @@ let url = 'http://ws-tcg.com/en/jsp/cardlist/expansionDetail';
 
 const cardset = function(id) {
    let pageCounter = 0;
-   return from(httpPromise(url,'POST','expansion_id=' + id))
+   return http(url,'POST','expansion_id=' + id)
    
       .map(pages)
       .mergeMap(input => range(1,input))
-      .mergeMap(i => from(httpPromise(url, 'POST', 'expansion_id=' + id + '&page=' + i)))
+      .mergeMap(i => http(url, 'POST', 'expansion_id=' + id + '&page=' + i))
       .map(page)
       .mergeMap(from)
       .mergeMap( ({href}) => {
@@ -138,7 +138,7 @@ const cardset = function(id) {
          href = href.substr(1)
          let [key,value] = href.split("=")
          value = encodeURI(value)
-         return from(httpPromise(`http://ws-tcg.com/en/cardlist/list/?${key}=${value}`))
+         return http(`http://ws-tcg.com/en/cardlist/list/?${key}=${value}`)
             .do(data => fs.writeFileSync(`/tmp/${encodeURIComponent(value)}.html`, data))
             .map(info)
             .catch(e => {
