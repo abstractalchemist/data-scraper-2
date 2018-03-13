@@ -2,6 +2,7 @@ const { expect } = require('chai')
 const { parseIt, parsePartition, findImageHref } = require('../src/translation_parsing')
 const fs = require('fs')
 const { create } = require('rxjs').Observable
+const { insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
 
 const async_readFile = file => {
    return create(observer => {
@@ -18,6 +19,87 @@ const async_readFile = file => {
       .toPromise()
 
 }
+
+describe('dynamo conversion', function() {
+   it('convert to', function() {
+      const res = convert_item({
+         id:0,
+         set_name:"nanoha",
+         set_prefix:"NN/WE",
+         set_attributes: {
+            foo:"bar"
+         }
+      })
+      expect(res).to.not.be.undefined
+      expect(res).to.have.property('id')
+      expect(res.id).to.have.property('N')
+      expect(res).to.have.property('set_name')
+      expect(res.set_name).to.have.property('S')
+      expect(res).to.have.property('set_attributes')
+   })
+
+   it('convert whole objects', function() {
+      const res = convert_obj_to_dynamo('test',
+         [
+            {
+               id:0,
+               name:'foo'
+            },
+            {
+               id:1,
+               name:'bar'
+            }
+         ])
+      expect(res).to.not.be.undefined
+      expect(res).to.have.property('RequestItems')
+      expect(res['RequestItems']).to.have.property('test')
+      expect(res['RequestItems']['test']).to.have.lengthOf(2)
+   })
+})
+
+describe('insert into dynamo test', function() {
+   it('insert test', async function() {
+      try {
+         await delete_table('test2').toPromise()
+      }
+      catch(e) {
+      }
+      let res = await create_table('test2',{id:"N"}).toPromise()
+      expect(res).to.be.not.undefined
+      res = await insert_into_table('test2', [
+         {
+            id:0,
+            value:'foo'
+         },
+         {
+            id:1,
+            value:'bar'
+         }
+      ]).toPromise()
+      expect(res).to.not.be.undefined
+      expect(res).to.have.property('UnprocessedItems')
+      expect(res.UnprocessedItems).to.be.empty
+      await delete_table('test2').toPromise()
+   })
+})
+
+describe('table creation test', function() {
+   it('create table test', async function() {
+      const res = await create_table('test',{id:"N"}).toPromise()
+      expect(res).to.not.be.undefined
+      expect(res).to.property('TableDescription')
+      expect(res.TableDescription).to.have.property('TableName')
+      expect(res.TableDescription.TableName).to.equal('test')
+      expect(res.TableDescription).to.have.property('TableArn')
+  })
+
+   it('delete table test', async function() {
+      const res = await delete_table('test').toPromise()
+      expect(res).to.not.be.undefined
+      expect(res).to.property('TableDescription')
+      expect(res.TableDescription).to.have.property('TableArn')
+   })
+})
 
 describe('translation parse testing', function() {
    it('basic', async function() {
