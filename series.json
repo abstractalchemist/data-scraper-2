@@ -1,0 +1,215 @@
+[
+    {
+	"id":"vivid_strike_ws",
+	"label":"Vivid Strike",
+	"prefix":"VS/W50",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/vivid_strike!_booster_pack.html",
+	    "id":331
+	}
+    },
+    {
+	"id":"nanoha_movie_ws",
+	"label":"Nanoha Movie",
+	"prefix":["N1/W32","N2/W32"],
+	"info" :
+	{
+	    "url":"http://www.heartofthecards.com/translations/nanoha_the_movie_1st_-_2nd_a-s_booster_pack.html",
+	    "id":151
+	}
+    },
+    {
+	"id":"love_live_v1",
+	"label":"Love Live v1",
+	"prefix":"LL/W24",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/love_live!_booster_pack.html",
+	    "id":120
+	}
+	
+    },
+    {
+	"id":"nanoha_movie_1_ws",
+	"label":"Nanoha Movie 1st",
+	"prefix":"N1/WE06",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/nanoha_the_movie_1st_extra_pack.html",
+	    "id":70
+	}
+    },
+    {
+	"id":"nanoha_movie_2_ws",
+	"label":"Nanoha Movie 2nd",
+	"prefix":"N2/W25",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/nanoha_the_movie_2nd_a-s_booster_pack.html",
+	    "id":122
+	}
+    },
+    {
+	"id":"symphogear",
+	"label":"Symphogear",
+	"prefix":"SG/W19",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/symphogear_booster_pack.html",
+	    "id":105
+      }
+    },
+    {
+	"id":"symphogear_g",
+	"label":"Symphogear G",
+	"prefix":"SG/W27",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/symphogear_g_booster_pack.html",
+	    "id":132
+	}
+    },
+    {
+	"id":"symphogear_gx",
+	"label":"Symphogear GX",
+	"prefix":"SG/W39",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/symphogear_gx_booster_pack.html",
+	    "id":163
+	}
+    },
+    {
+	"id":"symphogear_xd",
+	"label":"Symphogear XD",
+	"prefix":"SG/W52",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/symphogear_xd_unlimited_booster_pack.html",
+	    "id":349
+	}
+    },
+        {
+	"id":"sword_art_ordinal_scale",
+	"label":"Sword Art: Ordinal Scale",
+	"prefix":"SAO/S51",
+	"info":
+	{
+	    "url":"http://www.heartofthecards.com/translations/sword_art_online_ordinal_scale_booster_pack.html",
+	    "id":354
+	}
+    },
+
+    {
+	"id":"love_live_v1_en",
+	"label":"Love Live V1 (EN)",
+	"prefix":"LL/W24-E",
+	"info":
+	{
+	    "id":16
+	}
+    },
+    {
+	"id":"love_live_v2_en",
+	"label":"Love Live V2 (EN)",
+	"prefix":"LL/W34-E",
+	"info":
+	{
+	    "id":42
+	}
+    },
+    {
+	"id":"love_live_dx_v1",
+	"label":"Love Live DX V1",
+	"prefix":"LL/EN-W01",
+	"info":
+	{
+	    "id":32
+	}
+    },
+    {
+	"id":"love_live_dx_v2",
+	"label":"Love Live DX V2",
+	"prefix":"LL/EN-W02",
+	"info":
+	{
+	    "id":59
+	}
+    },
+     {
+	"id":"fate_kaleid_illya",
+	"label":"Fate/kalied liner PRISMA ILLYA",
+	"prefix":"PI/EN-SO4-E",
+	"info":
+	{
+	    "id":60
+	}
+     },
+     {
+	"id":"to_love_ru",
+	"label":"To Loveru Darkness 2nd",
+	"prefix":"TL/W37-E",
+	"info":
+	{
+	    "id":62
+	}
+     },
+     {
+	"id":"sword_art",
+	"label":"Sword Art Online",
+	"prefix":"SAO/S20-E",
+	"info":
+	{
+	    "id":8
+	}
+     },
+        {
+	"id":"sword_art_v2",
+	"label":"Sword Art Online Vol 2",
+	"prefix":"SAO/S26-E",
+	"info":
+	{
+	    "id":14
+	}
+	},
+            {
+	"id":"sword_art_reedit",
+	"label":"Sword Art Online Re: Edit",
+	"prefix":"SAO/S47-E",
+	"info":
+	{
+	    "id":67
+	}
+	    },
+                {
+	"id":"sword_art_ii",
+	"label":"Sword Art Online II",
+	"prefix":"SAO/SE23",
+	"info":
+	{
+	    "id":29
+	}
+		},
+                {
+	"id":"sword_art_ii_v2",
+	"label":"Sword Art Online II Vol 2",
+	"prefix":"SAO/S26-E",
+	"info":
+	{
+	    "id":54
+	}
+		},
+            {
+	"id":"love_live_sunshine",
+	"label":"Love Live Sunshine",
+	"prefix":"LSS/W45-E",
+	"info":
+	{
+	    "id":65
+	}
+    }
+
+
+
+]

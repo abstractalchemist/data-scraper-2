@@ -174,6 +174,10 @@ function trigger_map(trigger) {
          return "soul bounce"
       case "Soul Shot":
          return "soul shot"
+      case "Stock":
+         return "stock"
+      case "Soul Standby":
+         return "soul standby"
       default:
          throw new Error(`could not map ${trigger}`)
    }

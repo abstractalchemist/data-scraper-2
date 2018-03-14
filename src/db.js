@@ -187,7 +187,7 @@ const create_table = (db_name,attributes) => {
       })
    })
       .mergeMap(({TableDescription:{TableName, TableStatus}}) => {
-         console.log(`after creation, table status is ${TableStatus}`)
+         console.log(`after creation, table status is ${TableStatus} for ${TableName}`)
          if(TableStatus === 'CREATING')
             return create(observer => {
                db_interface.waitFor('tableExists', { TableName },
