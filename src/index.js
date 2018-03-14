@@ -1,4 +1,4 @@
-const { create_table, delete_table, insert_into_table } = require('./db')
+const { create_table, delete_table, insert_into_table, put_item } = require('./db')
 const { parseIt } = require('./translation_parsing')
 const { create, of, from } = require('rxjs').Observable
 const fs = require('fs')
@@ -41,6 +41,9 @@ const process_data = data => {
                   console.log(`data parse complete, transferring to table ${table_name}`)
                })
                .mergeMap(data => insert_into_table(table_name,data))
+               .mergeMap(_ => {
+                  return put_item('card_sets', {id:table_name, label, prefix})
+               })
                .mergeMap(_ => {
                   return create(observer => {
                      setTimeout(_ => {

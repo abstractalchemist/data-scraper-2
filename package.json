@@ -5,7 +5,9 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"node src/index.js"
+    "start":"node src/index.js",
+    "view_table":"node src/view.js",
+    "recreate_base_tables":"node src/create_base_tables.js"
   },
   "author": "",
   "license": "ISC",
