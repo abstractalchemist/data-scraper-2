@@ -206,7 +206,7 @@ function parseIt(file) {
          
          return series_code(couchdbid)
             .mergeMap(image_id => {
-               if(process.env.NODE_ENV !== 'TESTING' || !process.env.IGNORE_IMAGES)
+               if(!process.env.IGNORE_IMAGES)
                   return http('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + image_id + '&code=' + splitid[splitid.length - 1]  +  '&view=Go')
          //	   	.do(data => fs.writeFile('/tmp/' + couchdbid + '.html', data, err => { if(err) console.log(err)} ))
                      .map(data => new JSDOM(data))

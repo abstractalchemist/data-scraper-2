@@ -101,7 +101,7 @@ const info = function(data) {
    let rarity = extract('table.status tr:nth-child(2) td:nth-child(4)','rarity');
    let level = extract('table.status tr:nth-child(5) td:nth-child(2)','level');
    let abilities = extract('table.status tr:nth-child(8) td','abilities');
-   
+   abilities = abilities.split('\n') 
    let cost = extract('table.status tr:nth-child(5) td:nth-child(4)', 'cost');
    let power = extract('table.status tr:nth-child(6) td:nth-child(2)', 'power');
    let soul = dom.window.document.querySelectorAll('table.status tr:nth-child(6) td:nth-child(4) img').length
@@ -117,7 +117,7 @@ const info = function(data) {
       cost,
       trigger,
       id:couchdbid,
-      abilities:[abilities],
+      abilities,
       image:image.src.replace('..','http://ws-tcg.com/en/cardlist').replace(',','.')
    };
 }
