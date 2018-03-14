@@ -11,6 +11,10 @@ exports.http = (input, method, data) => {
       let module = http
       if(input.startsWith('https'))
          module = https
+      if(method == 'POST')
+         opts.headers = {
+            'content-type':'application/x-www-form-urlencoded; charset=UTF-8'
+         }
       const req = module.request(opts,
          res => {
             if(res.statusCode == 200 || res.statusCode == 201) {
@@ -23,7 +27,7 @@ exports.http = (input, method, data) => {
                })
             }
             else
-               observer.error(new Error(`bad status code ${res.statusCode}`))
+               observer.error(new Error(`bad status code ${res.statusCode} for ${input} and data ${data}`))
 
          })
       req.on('error', observer.error.bind(observer))

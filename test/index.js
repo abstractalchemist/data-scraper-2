@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { parseIt, parsePartition, findImageHref } = require('../src/translation_parsing')
 const fs = require('fs')
 const { create } = require('rxjs').Observable
-const { get_items, put_item, insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
+const { clean_object, get_items, put_item, insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
 
 const async_readFile = file => {
    return create(observer => {
@@ -125,6 +125,7 @@ describe('translation parse testing', function() {
    })
 
    it('parseIt', async function() {
+      this.timeout(30000)
       const res = await parseIt(process.cwd() + "/test_simple.html")
          .reduce(
             (R, V) => {
@@ -171,8 +172,15 @@ describe('translation parse testing', function() {
    })
 })
 
-describe('english parse testing', function() {
-   it('basic', async function() {
-      expect(true).to.be.true
+describe('clean object', function() {
+   it('basic', function() {
+      const res = clean_object({foo:"", ar:['1','2',''],tar:0, thisisempty:['','']})
+      expect(res).to.not.have.property('foo')
+      expect(res).to.have.property('ar')
+      expect(res.ar).to.have.lengthOf(2)
+      expect(res).to.have.property('tar')
+      expect(res).to.not.have.property('thisisempty')
    })
 })
+
+

@@ -1,0 +1,103 @@
+[
+
+    {
+	"id":"love_live_v1_en",
+	"label":"Love Live V1 (EN)",
+	"prefix":"LL/W24-E",
+	"info":
+	{
+	    "id":16
+	}
+    },
+    {
+	"id":"love_live_v2_en",
+	"label":"Love Live V2 (EN)",
+	"prefix":"LL/W34-E",
+	"info":
+	{
+	    "id":42
+	}
+    },
+    {
+	"id":"love_live_dx_v1",
+	"label":"Love Live DX V1",
+	"prefix":"LL/EN-W01",
+	"info":
+	{
+	    "id":32
+	}
+    },
+    {
+	"id":"love_live_dx_v2",
+	"label":"Love Live DX V2",
+	"prefix":"LL/EN-W02",
+	"info":
+	{
+	    "id":59
+	}
+    },
+     {
+	"id":"fate_kaleid_illya",
+	"label":"Fate/kalied liner PRISMA ILLYA",
+	"prefix":"PI/EN-SO4-E",
+	"info":
+	{
+	    "id":60
+	}
+     },
+     {
+	"id":"to_love_ru",
+	"label":"To Loveru Darkness 2nd",
+	"prefix":"TL/W37-E",
+	"info":
+	{
+	    "id":62
+	}
+     },
+     {
+	"id":"sword_art",
+	"label":"Sword Art Online",
+	"prefix":"SAO/S20-E",
+	"info":
+	{
+	    "id":8
+	}
+     },
+        {
+	"id":"sword_art_v2",
+	"label":"Sword Art Online Vol 2",
+	"prefix":"SAO/S26-E",
+	"info":
+	{
+	    "id":14
+	}
+	},
+            {
+	"id":"sword_art_reedit",
+	"label":"Sword Art Online Re: Edit",
+	"prefix":"SAO/S47-E",
+	"info":
+	{
+	    "id":67
+	}
+	    },
+                {
+	"id":"sword_art_ii",
+	"label":"Sword Art Online II",
+	"prefix":"SAO/SE23",
+	"info":
+	{
+	    "id":29
+	}
+		},
+                {
+	"id":"sword_art_ii_v2",
+	"label":"Sword Art Online II Vol 2",
+	"prefix":"SAO/S26-E",
+	"info":
+	{
+	    "id":54
+	}
+}
+
+]

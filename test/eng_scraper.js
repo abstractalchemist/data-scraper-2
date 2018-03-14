@@ -49,4 +49,16 @@ describe('english scraper', function() {
       const res = pages(contents)
       expect(res).to.equal(13)
    })
+
+   it('pages2', async function() {
+      const contents = await async_readfile(process.cwd() + "/test_pages2.html").toPromise()
+      const res = pages(contents)
+      expect(res).to.equal(16)
+   })
+
+   xit('cardset test', async function() {
+      this.timeout(30000)
+      const res = await cardset(16).toPromise();
+      expect(res).to.not.be.undefined
+   })
 })

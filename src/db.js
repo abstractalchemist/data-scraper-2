@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
-const { create, from, of } = require('rxjs').Observable
+const { Observable } = require('rxjs')
+const { create, from, of } = Observable
 
 if(process.env.CREDENTIALS_FILE)
    AWS.config.loadFromPath(process.env.CREDENTIALS_FILE)
@@ -33,6 +34,20 @@ const convert_to_schema = attributes => {
    }
    return schema
 }
+
+const convert_secondary = attributes => {
+   let schema = []
+   for(let i in attributes) {
+      if(attributes.hasOwnProperty(i))
+         schema.push({
+            AttributeName:i,
+            KeyType:"RANGE"
+         })
+   }
+   return schema
+}
+
+
 
 const convert_type = item => {
    if(Array.isArray(item)) {
@@ -133,14 +148,23 @@ exports.get_items = get_items
 
 const clean_object = object => {
    for(let i in object) {
-      if(object.hasOwnProperty(i) && typeof object[i] === 'string')
-         if(object[i].length === 0)
-            delete object[i]
+      if(object.hasOwnProperty(i)) {
+         if(typeof object[i] === 'string') {
+            if(object[i].length === 0)
+               delete object[i]
+         }
+         else if(Array.isArray(object[i])) {
+            object[i] = object[i].filter(s => s && s.trim().length > 0)
+            if(object[i].length == 0)
+               delete object[i]
+         }
+      }
 
    }
    return object
 }
 
+exports.clean_object = clean_object
 
 const insert_into_table = (table, objects) => {
    return from(objects)
@@ -159,20 +183,45 @@ const insert_into_table = (table, objects) => {
                   }
                })
          })
+            .catch(e => {
+
+               return from(data)
+                  .mergeMap(d => {
+                     return create(observer => {
+                        db_interface.putItem({
+                           TableName:table,
+                           Item:convert_item(d)
+                        },
+                        (error, data) => {
+                           if(error) {
+                              console.log(d)
+                              observer.error(error)
+                           }
+                           else {
+                              
+                              observer.next(data)
+                              observer.complete()
+                           }
+                        })
+                     })
+                  })
+            })
       })
+   
+   
 }
 
 
 exports.insert_into_table = insert_into_table
 
-const create_table = (db_name,attributes) => {
+const create_table = (db_name,attributes,sort_key) => {
    if(!db_name)
       throw new Error("database name creation requires table")
    return create(observer => {
       db_interface.createTable({
          TableName:db_name,
-         AttributeDefinitions: convert_to_attributes(attributes),
-         KeySchema:convert_to_schema(attributes),
+         AttributeDefinitions: convert_to_attributes(attributes).concat(convert_to_attributes(sort_key)),
+         KeySchema:convert_to_schema(attributes).concat(convert_secondary(sort_key)),
          ProvisionedThroughput:{
             ReadCapacityUnits:5,
             WriteCapacityUnits:5

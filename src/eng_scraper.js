@@ -3,14 +3,19 @@ const { http } = require('./utils');
 const { from, range, of, create } = require('rxjs').Observable;
 const fs = require('fs')
 const pages = function(data) {
-   let dom = JSDOM.fragment(data);
-   
-   let links = dom.querySelectorAll('p.pageLink a');
-   
-   
-   let pageCount = links.item(links.length - 2).textContent;
-   return parseInt(pageCount);
+   try {
+      let dom = JSDOM.fragment(data);
+      
+      let links = dom.querySelectorAll('p.pageLink a');
+      
+      
+      let pageCount = links.item(links.length - 2).textContent;
+      return parseInt(pageCount);
 
+   }
+   catch(e) {
+      console.log('error reading data ' + data, e)
+   }
 }
 
 const page = function(data) {
@@ -118,28 +123,39 @@ const info = function(data) {
       trigger,
       id:couchdbid,
       abilities,
-      image:image.src.replace('..','http://ws-tcg.com/en/cardlist').replace(',','.')
+      image:image.src.replace('..','https://en.ws-tcg.com/cardlist').replace(',','.')
    };
 }
 
-let url = 'http://ws-tcg.com/en/jsp/cardlist/expansionDetail';
+let url = 'https://en.ws-tcg.com/jsp/cardlist/expansionDetail';
 
 const cardset = function(id) {
    let pageCounter = 0;
-   return http(url,'POST','expansion_id=' + id)
-   
+   return http(url,'POST','expansion_id=' + id + '&page=1')
       .map(pages)
       .mergeMap(input => range(1,input))
       .mergeMap(i => http(url, 'POST', 'expansion_id=' + id + '&page=' + i))
       .map(page)
-      .mergeMap(from)
+      .mergeMap(data => from(data))
       .mergeMap( ({href}) => {
-      //	    console.log(`looking up ${href}`)
          href = href.substr(1)
          let [key,value] = href.split("=")
          value = encodeURI(value)
-         return http(`http://ws-tcg.com/en/cardlist/list/?${key}=${value}`)
-            .do(data => fs.writeFileSync(`/tmp/${encodeURIComponent(value)}.html`, data))
+         
+         return http(`https://en.ws-tcg.com/cardlist/list/?${key}=${value}`)
+            .mergeMap(data => {
+               
+               return create(observer => {
+                  fs.writeFile(`/tmp/${encodeURIComponent(value)}.html`, data,
+                     (error) => {
+                        if(error) observer.error(error)
+                        else {
+                           observer.next(data)
+                           observer.complete()
+                        }
+                     })
+               })
+            })
             .map(info)
             .catch(e => {
                console.log(`Error lookup: ${href} via ${key}=${value}`);

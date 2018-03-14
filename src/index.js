@@ -1,4 +1,5 @@
 const { create_table, delete_table, insert_into_table, put_item } = require('./db')
+const { cardset } = require('./eng_scraper')
 const { parseIt } = require('./translation_parsing')
 const { create, of, from } = require('rxjs').Observable
 const fs = require('fs')
@@ -16,42 +17,51 @@ const process_data = data => {
    let { id, label, prefix, info } = data[0]
    data.shift()
    let table_name = id
-   console.log(`inputting table ${table_name}`)
+
+   const next = _ => 
+      create(observer => 
+         setTimeout(_ =>
+            process_data(data).subscribe(observer)
+         , 15000))
+   
+
+   const add_to_sets = _ => put_item('card_sets', {id:table_name, label, prefix})
+
+   const insert_table = data => insert_into_table(table_name, data)
+
+   const combine = (R,V) => {
+      R.push(V)
+      return R
+   }
+
    return delete_table(table_name)
       .catch(e => {
-         console.log(`probably tried to delete a table that does not exist; this is not a problem`)
          return of("")
-      })
-      .do(_ => {
-         console.log(`deleted table ${table_name}`)
       })
       .mergeMap(_ =>  create_table(table_name, {id:"S"}))
       .map(_ => info)
       .mergeMap( ({url,id}) => {
          if(url) {
-            console.log(`parsing data from ${url}`)
+            console.log(`parsing data from ${url} for ${table_name}`)
             return parseIt(url)
-               .reduce(
-                  (R,V) => {
-                     R.push(V)
-                     return R
-                  },
-                  [])
+               .reduce(combine, [])
                .do(_ => {
                   console.log(`data parse complete, transferring to table ${table_name}`)
                })
-               .mergeMap(data => insert_into_table(table_name,data))
-               .mergeMap(_ => {
-                  return put_item('card_sets', {id:table_name, label, prefix})
-               })
-               .mergeMap(_ => {
-                  return create(observer => {
-                     setTimeout(_ => {
-                        process_data(data)
-                           .subscribe(observer)
-                        }, 15000)
-                  })
-               })
+               .mergeMap(insert_table)
+               .mergeMap(add_to_sets)
+               .mergeMap(next)
+         }
+         else if(id) {
+            // probably english
+            console.log(`looking up from ws-tcg english set ${id} for table ${table_name}`)
+            return cardset(id)
+               .reduce(combine, [])
+
+               .mergeMap(insert_table)
+               .mergeMap(add_to_sets)
+               .mergeMap(next)
+               
          }
          else { 
             console.log(`skipping ${table_name}`)
