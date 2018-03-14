@@ -166,8 +166,16 @@ function trigger_map(trigger) {
          return "soul"
       case "Salvage":
          return "salvage"
+      case "Draw":
+         return "draw"
       case "Treasure":
          return "treasure"
+      case "Soul Bounce":
+         return "soul bounce"
+      case "Soul Shot":
+         return "soul shot"
+      default:
+         throw new Error(`could not map ${trigger}`)
    }
 }
 
@@ -194,7 +202,7 @@ function parseIt(file) {
          
          return series_code(couchdbid)
             .mergeMap(image_id => {
-               if(process.env.NODE_ENV !== 'TESTING')
+               if(process.env.NODE_ENV !== 'TESTING' || !process.env.IGNORE_IMAGES)
                   return http('https://littleakiba.com/tcg/weiss-schwarz/card.php?series_id=' + image_id + '&code=' + splitid[splitid.length - 1]  +  '&view=Go')
          //	   	.do(data => fs.writeFile('/tmp/' + couchdbid + '.html', data, err => { if(err) console.log(err)} ))
                      .map(data => new JSDOM(data))

@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { parseIt, parsePartition, findImageHref } = require('../src/translation_parsing')
 const fs = require('fs')
 const { create } = require('rxjs').Observable
-const { insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
+const { get_items, put_item, insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
 
 const async_readFile = file => {
    return create(observer => {
@@ -58,7 +58,7 @@ describe('dynamo conversion', function() {
 })
 
 describe('insert into dynamo test', function() {
-   it('insert test', async function() {
+   it('batch insert test', async function() {
       try {
          await delete_table('test2').toPromise()
       }
@@ -79,7 +79,31 @@ describe('insert into dynamo test', function() {
       expect(res).to.not.be.undefined
       expect(res).to.have.property('UnprocessedItems')
       expect(res.UnprocessedItems).to.be.empty
+
+      let all_items = await get_items('test2').toPromise()
+      expect(all_items).to.have.property('Items')
+      expect(all_items.Items).to.have.lengthOf(2)
+
       await delete_table('test2').toPromise()
+   })
+
+   it('one item test', async function() {
+      try {
+         await delete_table('test3').toPromise()
+      }
+      catch(e) {
+      }
+      await create_table('test3', {id:"N"}).toPromise()
+      let res = await put_item('test3', {
+         id:0
+      }).toPromise()
+
+      expect(res).to.not.be.undefined
+      let all_items = await get_items('test3').toPromise()
+      expect(all_items).to.have.property('Items')
+      expect(all_items.Items).to.have.lengthOf(1)
+
+      await delete_table('test3').toPromise()
    })
 })
 
@@ -87,17 +111,11 @@ describe('table creation test', function() {
    it('create table test', async function() {
       const res = await create_table('test',{id:"N"}).toPromise()
       expect(res).to.not.be.undefined
-      expect(res).to.property('TableDescription')
-      expect(res.TableDescription).to.have.property('TableName')
-      expect(res.TableDescription.TableName).to.equal('test')
-      expect(res.TableDescription).to.have.property('TableArn')
   })
 
    it('delete table test', async function() {
       const res = await delete_table('test').toPromise()
       expect(res).to.not.be.undefined
-      expect(res).to.property('TableDescription')
-      expect(res.TableDescription).to.have.property('TableArn')
    })
 })
 
@@ -142,6 +160,14 @@ describe('translation parse testing', function() {
       expect(res.abilities[0]).to.equal('[C] ASSIST All your Characters in front of this gain +500 Power.')
       expect(res.abilities[1]).to.equal('[S] [Rest this] Choose 1 of your ::Flame:: Characters, and that Character gains +500 Power for the turn.')
      
+   })
+
+   it('parseParition3', async function() {
+      const contents = await async_readFile(process.cwd() + "/partition_test3.txt")
+      const res = await parsePartition(contents)
+      expect(res).to.not.be.undefined
+      expect(res).to.have.property('trigger')
+      expect(res.trigger).to.equal("None")
    })
 })
 
