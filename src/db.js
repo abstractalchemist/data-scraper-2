@@ -11,6 +11,8 @@ if(process.env.ENDPOINT)
 else
    db_interface = new AWS.DynamoDB()
 
+exports.db_interface = db_interface
+
 const convert_to_attributes = attributes => {
    let dynamodb_attributes = []
    for(let i in attributes) {
