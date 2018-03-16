@@ -1,0 +1,21 @@
+[
+   {
+      "id":"love_live_sunshine",
+      "label":"Love Live! Sunshine!",
+      "prefix":"LSS/W45",
+      "info": {
+         "url":"http://www.heartofthecards.com/translations/love_live!_sunshine_booster_pack.html",
+         "id":302
+      }
+   },
+   {
+      "id":"love_live_sunshine_extra",
+      "label":"Love Live! Sunshine! Extra",
+      "prefix":"LSS/WE27",
+      "info": {
+         "url":"http://www.heartofthecards.com/translations/love_live!_sunshine_extra_pack.html",
+         "id":340
+      }
+   }
+
+]

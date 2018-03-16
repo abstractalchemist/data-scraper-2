@@ -1,0 +1,29 @@
+[
+   {
+      "id":"nanoha_a",
+      "prefix":"NA/W12",
+      "label" : "Nanoha A's",
+      "info" : {
+         "url":"http://www.heartofthecards.com/translations/nanoha_a-s_booster_pack.html",
+         "id":77
+      }
+   },
+   {
+      "id":"nanoha_strikers",
+      "prefix":"NS/W04",
+      "label":"Nanoha Strikers",
+      "info": {
+         "url":"http://www.heartofthecards.com/translations/nanoha_strikers_booster_pack.html",
+         "id":46
+      }
+   },
+   {
+      "id":"gurren_lagen",
+      "prefix":"GL/S52",
+      "label":"Gurren Lagann",
+      "info": {
+         "url":"http://www.heartofthecards.com/translations/gurren_lagann_booster_pack.html",
+         "id":367
+      }
+   }
+]
