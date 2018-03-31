@@ -2,7 +2,7 @@ const { expect } = require('chai')
 const { parseIt, parsePartition, findImageHref } = require('../src/translation_parsing')
 const fs = require('fs')
 const { create } = require('rxjs').Observable
-const { clean_object, get_items, put_item, insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('../src/db')
+const { clean_object, get_items, put_item, insert_into_table, convert_obj_to_dynamo, convert_item, create_table, delete_table } = require('aws-interface')
 
 const async_readFile = file => {
    return create(observer => {
