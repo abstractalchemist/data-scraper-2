@@ -1,4 +1,4 @@
-const { create_table, delete_table, insert_into_table, put_item } = require('./db')
+const { create_table, delete_table, insert_into_table, put_item } = require('aws-interface')
 const { cardset } = require('./eng_scraper')
 const { parseIt } = require('./translation_parsing')
 const { create, of, from } = require('rxjs').Observable
@@ -14,7 +14,7 @@ if(process.env.NODE_ENV !== 'production')
 const process_data = data => {
    if(data.length == 0)
       return of("")
-   let { id, label, prefix, info } = data[0]
+   let { id, label, prefix, info: {url, id:set_id} } = data[0]
    data.shift()
    let table_name = id
 
@@ -27,47 +27,35 @@ const process_data = data => {
 
    const add_to_sets = _ => put_item('card_sets', {id:table_name, label, prefix})
 
-   const insert_table = data => insert_into_table(table_name, data)
+   const insert_table = data => insert_into_table('cards', data)
 
    const combine = (R,V) => {
       R.push(V)
       return R
    }
 
-   return delete_table(table_name)
-      .catch(e => {
-         return of("")
-      })
-      .mergeMap(_ =>  create_table(table_name, {id:"S"}))
-      .map(_ => info)
-      .mergeMap( ({url,id}) => {
-         if(url) {
-            console.log(`parsing data from ${url} for ${table_name}`)
-            return parseIt(url)
-               .reduce(combine, [])
-               .do(_ => {
-                  console.log(`data parse complete, transferring to table ${table_name}`)
-               })
-               .mergeMap(insert_table)
-               .mergeMap(add_to_sets)
-               .mergeMap(next)
-         }
-         else if(id) {
-            // probably english
-            console.log(`looking up from ws-tcg english set ${id} for table ${table_name}`)
-            return cardset(id)
-               .reduce(combine, [])
+   return create(observer => {
+       if(url) {
+          console.log(`parsing data from ${url} for ${table_name}`)
+          parseIt(url).subscribe(observer)
 
-               .mergeMap(insert_table)
-               .mergeMap(add_to_sets)
-               .mergeMap(next)
-               
-         }
-         else { 
-            console.log(`skipping ${table_name}`)
-            return of({})
-         }
-     })
+       }
+       else if(set_id) {
+          // probably english
+          console.log(`looking up from ws-tcg english set ${set_id} for table ${table_name}`)
+          cardset(set_id).subscribe(observer)
+       }
+       else { 
+          console.log(`skipping ${table_name}`)
+          observer.next({})
+          observer.complete()
+       }
+   })
+      .map(item => Object.assign({}, item, {table_id:table_name}))
+      .reduce(combine,[])
+      .mergeMap(insert_table)
+      .mergeMap(add_to_sets)
+      .mergeMap(next)
 }
 create(observer => {
    fs.readFile(process.env.CONFIG_FILE,
